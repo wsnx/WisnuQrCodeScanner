@@ -95,7 +95,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d("Panggilan gagal", result.getContents());
                 }
             }
-            if (Patterns.EMAIL_ADDRESS.matcher(result.getContents()).matches()) {
+
+            if  (Patterns.EMAIL_ADDRESS.matcher(result.getContents()).matches())
+            {
+                String mailAddress = String.valueOf(result.getContents());
+                Intent KirimEmail = new Intent(Intent.ACTION_SENDTO);
+                KirimEmail.setType("message/rfc822");
+                KirimEmail.setData(Uri.parse("mailto:"+ mailAddress));
+                KirimEmail.putExtra(Intent.EXTRA_SUBJECT, "Tugas QR Scanner UAS Wisnu");
+                KirimEmail.putExtra(Intent.EXTRA_TEXT, "Selamat anda Telah sukses mengirim Email");
+                KirimEmail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                try {
+                    startActivity(Intent.createChooser(KirimEmail, "Send mail..."));
+                    finish();
+                }
+                catch( Exception e){
+                    Log.d("Email tidak terkirim ", result.getContents());
+                }
+            } else if (Patterns.EMAIL_ADDRESS.matcher(result.getContents()).matches()) {
                 Intent visitmEmail = new Intent(Intent.EXTRA_EMAIL, Uri.parse(result.getContents()));
                 visitmEmail.setType("text/plain");
                 visitmEmail.putExtra(Intent.EXTRA_SUBJECT, "Subject");
@@ -110,23 +127,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
 
-            if  (Patterns.EMAIL_ADDRESS.matcher(result.getContents()).matches())
-            {
-                String mailAddress = String.valueOf(result.getContents());
-                Intent KirimEmail = new Intent(Intent.ACTION_SENDTO);
-                KirimEmail.setType("message/rfc822");
-                KirimEmail.setData(Uri.parse("mailto:"+ mailAddress));
-                KirimEmail.putExtra(Intent.EXTRA_SUBJECT, "Tugas QR Scanner UAS Wisnu");
-                KirimEmail.putExtra(Intent.EXTRA_TEXT, "Selamat anda Telah sukses mengirim Email");
-                KirimEmail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                try {
-                    startActivity(Intent.createChooser(KirimEmail,"send To email"));
-                    finish();
-                }
-                catch( Exception e){
-                    Log.d("Email tidak terkirim ", result.getContents());
-                }
-            }
         }else {
             super.onActivityResult(requestCode, resultCode, data);
         }
