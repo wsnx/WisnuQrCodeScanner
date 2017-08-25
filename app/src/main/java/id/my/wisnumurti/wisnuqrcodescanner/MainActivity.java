@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ActionProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -83,16 +84,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
                 startActivity(intent);
-                }else{
+            } else {
                 try {
                     Intent PhoneIntent = new Intent();
                     PhoneIntent.setAction("android.intent.action.DIAL");
                     PhoneIntent.setData(Uri.parse(result.getContents()));
                     startActivity(PhoneIntent);
 
-                    }catch(Exception e){
+                } catch (Exception e) {
                     Log.d("Panggilan gagal", result.getContents());
+                }
             }
+            if (Patterns.EMAIL_ADDRESS.matcher(result.getContents()).matches()) {
+                Intent visitmEmail = new Intent(Intent.EXTRA_EMAIL, Uri.parse(result.getContents()));
+                visitmEmail.setType("text/plain");
+                visitmEmail.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+                visitmEmail.putExtra(Intent.EXTRA_TEXT, "Body");
+                startActivity(visitmEmail);
+            }else{
+                try {
+                    Intent SendEmail = new Intent(Intent.ACTION_SENDTO, Uri.parse(result.getContents()));
+                    startActivity(SendEmail);
+                } catch (ActivityNotFoundException e) {
+                    Log.d("Email tidak terkirim ", result.getContents());
+                }
             }
 
             if  (Patterns.EMAIL_ADDRESS.matcher(result.getContents()).matches())
@@ -105,14 +120,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 KirimEmail.putExtra(Intent.EXTRA_TEXT, "Selamat anda Telah sukses mengirim Email");
                 KirimEmail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 try {
-                    startActivity(Intent.createChooser(KirimEmail, "Send mail..."));
+                    startActivity(Intent.createChooser(KirimEmail,"send To email"));
                     finish();
-                     }
+                }
                 catch( Exception e){
                     Log.d("Email tidak terkirim ", result.getContents());
                 }
             }
-            }else {
+        }else {
             super.onActivityResult(requestCode, resultCode, data);
         }
 
