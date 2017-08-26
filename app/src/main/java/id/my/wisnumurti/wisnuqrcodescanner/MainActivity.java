@@ -79,16 +79,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if (Patterns.PHONE.matcher(result.getContents()).matches()) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + result.getContents()));
-                startActivity(intent);
+                intent.setData(Uri.parse(result.getContents()));
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
                 startActivity(intent);
             } else {
                 try {
-                    Intent PhoneIntent = new Intent();
-                    PhoneIntent.setAction("android.intent.action.DIAL");
-                    PhoneIntent.setData(Uri.parse(result.getContents()));
+                    String tlp = result.getContents().trim();
+                    Intent PhoneIntent = new Intent(Intent.ACTION_CALL);
+                    //PhoneIntent.setAction("android.intent.action.DIAL");
+                    PhoneIntent.setData(Uri.parse(tlp));
                     startActivity(PhoneIntent);
 
                 } catch (Exception e) {
