@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
 
+            //buat kirim email
             if  (Patterns.EMAIL_ADDRESS.matcher(result.getContents()).matches())
             {
                 String mailAddress = String.valueOf(result.getContents());
